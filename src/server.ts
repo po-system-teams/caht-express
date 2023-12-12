@@ -3,14 +3,16 @@ import consturctSocket from "./socket/index";
 import consturctMySql from "./model/mysql";
 
 const middleware  = require('./middleware');
+const { serverconfig } = require("./config");
 
-const port = 3000;
 const app = express();
+
 const { CORS_ALLOW_ORIGIN } = process.env;
 export const sequelize = consturctMySql();
 
 const messageRouter = require("./router/message");
 const loginRouter = require("./router/login");
+const userListRouter = require("./router/userList");
 
 app.set("trust proxy", true);
 app.use(express.json());
@@ -31,7 +33,10 @@ app.use((req, res, next) => {
 app.use(middleware);
 
 app.use("/message", messageRouter);
-app.use("/login", loginRouter);
-const server = app.listen(port);
+app.use("/", loginRouter);
+app.use("/", userListRouter);
+const server = app.listen(serverconfig.port, serverconfig.host, () => {
+  console.log(`Server is running at http://${serverconfig.host}:${serverconfig.port}`);
+});
 consturctSocket(server);
 
