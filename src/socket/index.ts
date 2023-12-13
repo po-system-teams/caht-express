@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 import { RedisKey } from '../types/redis';
 import { UserBehavior, UserBehaviorType, connectUser } from '../types/socket';
 import { getRedis, setRedis } from '../utils/redisUtils';
-import joinGroup from './group';
+import privateChat from './private';
 const socket = require('socket.io');
 export default function consturctSocket(server: any) {
   const io = socket(server, {
@@ -15,9 +15,9 @@ export default function consturctSocket(server: any) {
     // 监听行为
     socket.on('behavior', (data: UserBehavior) => {
       switch (data.type) {
-        case UserBehaviorType.JOIN_PRIVATE:
-          // 加入群聊
-          joinGroup(socket);
+        case UserBehaviorType.LAUNCHPRIVATECHAT:
+          // 创建私聊,监听该用户的sendMessage事件
+          privateChat(socket);
           break;
         case UserBehaviorType.LOGIN:
           // 登录

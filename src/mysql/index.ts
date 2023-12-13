@@ -13,3 +13,13 @@ export const getBatchUser = async (ids: Array<string>) => {
     });
     return findResult;
 }
+
+// 根据用户名查询用户信息
+export const getUserByName = async (name: string) => {
+  const findResult = await User.findAll({
+    where: {
+      name,
+    },
+  });
+  return findResult;
+}

@@ -2,16 +2,13 @@ import express from 'express';
 import { rejectRes, resolveRes } from '../utils/respone';
 import moment from 'moment';
 import { UserType } from '../types/chat';
+import { getUserByName } from '../mysql';
 const User = require('../model/User');
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
   try {
-    const findResult = await User.findAll({
-      where: {
-        name: req.body.userName,
-      },
-    });
+    const findResult = await getUserByName(req.body.userName);
     if (findResult.length) {
       res.cookie('login', findResult[0].name, { signed: true });
       res.send(resolveRes(findResult[0]));

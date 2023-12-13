@@ -1,11 +1,13 @@
 // 消息类型
 export interface Message {
-	type: MessageType;
-	origin: MessageOrigin;
-	data: string;
-	avatar?: string;
-	time?: number;
-	id?: string;
+	type: MessageType; // 消息类型
+	origin: MessageOrigin; // 消息来源
+	originUserId: number, // 来源用户id
+	originSocketId: string, // 来源socketId
+	targetUserId: number, // 目标用户id
+	targetSocketId: string, // 目标socketId
+	data: string; // 消息内容
+	time: number; // 消息时间
 }
 
 export enum MessageType {
@@ -22,18 +24,18 @@ export enum MessageOrigin {
 export interface UserBehavior {
 	type: UserBehaviorType,
 	userId: string, // 用户id
-	targetId: string, // 操作目标id
+	targetSocketId: string, // 操作目标的socketId
 	name?: string, // 用户名称
 	socketId?: string, // socketId
 }
 
 // 行为类型
 export enum UserBehaviorType {
-	JOIN_GRPUP = 'join_group', // 加入群聊
-	LEAVE_GROUP = 'leave_group', // 退出群聊
-	JOIN_PRIVATE = 'join_private', // 加入私聊
-	LEAVE_PRIVATE = 'leave_private', // 退出私聊
 	LOGIN = 'login', // 登录
+	LAUNCHPRIVATECHAT = 'launch_private_chat', // 启动私聊
+	BREAKPRIVATECHAT = 'break_private_chat', // 断开私聊
+	LAUNCHGROUPCHAT = 'launch_group_chat', // 启动群聊
+	BREAKGROUTCHAT = 'break_group_chat', // 断开群聊
 }
 
 
