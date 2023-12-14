@@ -6,7 +6,7 @@ const User = require('../model/User');
 export const getBatchUser = async (ids: Array<string>) => {
     const findResult = await User.findAll({
         where: {
-          id: {
+          userId: {
             [Op.in]: ids,
           },
         },

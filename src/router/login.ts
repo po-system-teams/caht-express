@@ -14,7 +14,7 @@ router.post('/login', async (req, res) => {
       res.send(resolveRes(findResult[0]));
       return;
     }
-    // // 没有该用户，创建一个
+    // 没有该用户，创建一个
     const inserList: UserType = {
       name: req.body.userName,
       last_login_time: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),

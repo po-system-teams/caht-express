@@ -3,7 +3,7 @@ import { sequelize } from "../server";
 
 
 const User = sequelize.define('User', {
-    id: {
+    userId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
@@ -12,9 +12,6 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
-    },
-    socketId: {
-        type: DataTypes.INTEGER
     },
     create_time: {
         type: DataTypes.DATE(6),

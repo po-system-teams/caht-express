@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { Message, MessageOrigin, MessageType } from "../types/socket";
+import { Message, MessageOrigin, MessageType } from "../types/chat";
 
 // 群聊
 

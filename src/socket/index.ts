@@ -1,10 +1,10 @@
 import { Socket } from 'socket.io';
-import { RedisKey } from '../types/redis';
-import { UserBehavior, UserBehaviorType, connectUser } from '../types/socket';
-import { getRedis, setRedis } from '../utils/redisUtils';
+import { ClientBehavior, ClientBehaviorType, SocketEventType } from '../types/chat';
+import { connectInit } from './connectInit';
 import privateChat from './private';
 const socket = require('socket.io');
 export default function consturctSocket(server: any) {
+  const userListUpdate = require('./userList');
   const io = socket(server, {
     cors: {
       origin: '*',
@@ -12,16 +12,18 @@ export default function consturctSocket(server: any) {
   });
   io.on('connection', (socket: Socket) => {
     console.log(socket.id, '成功链接');
-    // 监听行为
-    socket.on('behavior', (data: UserBehavior) => {
+    // 监听客户端行为
+    socket.on(SocketEventType.CLIENT_BEHAVIOR, async (data: ClientBehavior) => {
       switch (data.type) {
-        case UserBehaviorType.LAUNCHPRIVATECHAT:
+        case ClientBehaviorType.LAUNCHPRIVATECHAT:
           // 创建私聊,监听该用户的sendMessage事件
           privateChat(socket);
           break;
-        case UserBehaviorType.LOGIN:
+        case ClientBehaviorType.LOGIN:
           // 登录
-          connectInit(data);
+          await connectInit(data);
+          // 登录之后主动返回一次用户列表给客户端
+          userListUpdate(io);
           break;
         default:
           break;
@@ -30,27 +32,3 @@ export default function consturctSocket(server: any) {
   });
 }
 
-// 连接初始化
-async function connectInit(data: UserBehavior) {
-  let userList = await getRedis(RedisKey.CONNECT_USER_LIST);
-  if (userList === null) {
-    userList = '[]';
-  }
-  userList = JSON.parse(userList);
-  // 判断redis是否已有该用户
-  const findIndex = userList.findIndex((item) => item.id === data.userId);
-  const user: connectUser = {
-    id: data.userId,
-    socketId: data.socketId,
-    name: data.name,
-  };
-  if (findIndex > -1) {
-    // 已有该用户
-    userList[findIndex] = user;
-  } else {
-    // 未有该用户
-    userList.push(user);
-  }
-  // 存到redis里
-  await setRedis(RedisKey.CONNECT_USER_LIST, JSON.stringify(userList));
-}

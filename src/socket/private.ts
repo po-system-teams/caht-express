@@ -1,6 +1,6 @@
 // 私聊
 import { Socket } from "socket.io";
-import { Message, MessageOrigin, MessageType } from "../types/socket";
+import { Message, MessageOrigin, MessageType } from "../types/chat";
 export default function privateChat(socket: Socket) {
   socket.on("sendMessage", (data) => {
     console.log(data, "收到消息啦");
