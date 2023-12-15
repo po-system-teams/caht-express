@@ -3,7 +3,7 @@ import { RedisKey } from "../types/redis";
 import { ClientBehavior } from "../types/chat";
 import { getRedis, setRedis } from "../utils/redisUtils";
 
-// 连接初始化
+// 连接初始化, 存入redis, 返回该用户信息
 export async function connectInit(data: ClientBehavior) {
     let userList = await getRedis(RedisKey.CONNECT_USER_LIST);
     if (userList === null) {
@@ -25,4 +25,5 @@ export async function connectInit(data: ClientBehavior) {
     }
     // 存到redis里
     await setRedis(RedisKey.CONNECT_USER_LIST, JSON.stringify(userList));
-  }
+    return user;
+}

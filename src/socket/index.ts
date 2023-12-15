@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
-import { ClientBehavior, ClientBehaviorType, SocketEventType } from '../types/chat';
+import { ClientBehavior, ClientBehaviorType, SocketEventType, UserType } from '../types/chat';
 import { connectInit } from './connectInit';
+import { addSocket } from './connectSocket';
 import privateChat from './private';
 const socket = require('socket.io');
 export default function consturctSocket(server: any) {
@@ -21,7 +22,10 @@ export default function consturctSocket(server: any) {
           break;
         case ClientBehaviorType.LOGIN:
           // 登录
-          await connectInit(data);
+          const user: UserType = await connectInit(data);
+          // user是存入redis的信息，包括id和name
+          // 用id作一个socket映射，用于对某个客户端发送消息
+          addSocket(user.userId, socket);
           // 登录之后主动返回一次用户列表给客户端
           userListUpdate(io);
           break;

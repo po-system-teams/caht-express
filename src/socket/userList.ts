@@ -9,17 +9,22 @@ async function userListUpdate(io: any) {
     // get redis from RedisKey.CONNECT_USER_LIST
     let userList = await getRedis(RedisKey.CONNECT_USER_LIST);
     userList = JSON.parse(userList);
-    userList = userList.map((ite) => ite.userId);
+    const userIdList = userList.map((ite) => ite.userId);
     // 查询数据库
-    const data = await getBatchUser(userList);
+    let data = await getBatchUser(userIdList);
+    data = JSON.parse(JSON.stringify(data));
     // 将socketId映射到data里
     for (let i = 0; i < data.length; i++) {
-      const socketId = userList.find((ite) => ite === data[i].userId);
-      if (socketId) {
-        data[i].socketId = socketId;
+      const target = userList.find((ite) => {
+        if (ite.userId === data[i].userId) {
+          return ite.socketId;
+        }
+        return null
+      });
+      if (target) {
+        data[i].socketId = target.socketId;
       }
     }
-
     // 广播给所有用户
     io.emit(SocketEventType.SERVER_BEHAVIOR, {
       type: ServerBehaviorType.USERLISTUPDATE,

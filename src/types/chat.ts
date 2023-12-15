@@ -1,6 +1,7 @@
 export enum SocketEventType { // socket事件名称
     CLIENT_BEHAVIOR = 'clientBehavior', // 客户端行为
     SEND_MESSAGE = 'sendMessage', // 客户端发送消息给服务端
+	RECEIVE_MESSAGE = 'receiveMessage', // 客户端接收服务端消息
     SERVER_BEHAVIOR = 'serverBehavior', // 服务端行为
 }
 
@@ -21,7 +22,7 @@ export interface Message {
 	targetUserId: number, // 目标用户id
 	targetSocketId: string, // 目标socketId
 	data: string; // 消息内容
-	time: number; // 消息时间
+	time?: number; // 消息时间
 }
 
 export enum MessageType {
