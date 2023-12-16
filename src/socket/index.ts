@@ -1,7 +1,6 @@
 import { Socket } from 'socket.io';
-import { ClientBehavior, ClientBehaviorType, SocketEventType, UserType } from '../types/chat';
-import { connectInit } from './connectInit';
-import { addSocket } from './connectSocket';
+import { ClientBehavior, ClientBehaviorPrivateChat, BehaviorType, SocketEventType, ClientBehaviorLogin } from '../types/chat';
+import { saveUserRedisStorage } from '../redis/util';
 import privateChat from './private';
 const socket = require('socket.io');
 export default function consturctSocket(server: any) {
@@ -16,16 +15,13 @@ export default function consturctSocket(server: any) {
     // 监听客户端行为
     socket.on(SocketEventType.CLIENT_BEHAVIOR, async (data: ClientBehavior) => {
       switch (data.type) {
-        case ClientBehaviorType.LAUNCHPRIVATECHAT:
-          // 创建私聊,监听该用户的sendMessage事件
-          privateChat(socket);
+        case BehaviorType.LAUNCHPRIVATECHAT:
+          // 私聊,处理私聊信息
+          privateChat(data as ClientBehaviorPrivateChat);
           break;
-        case ClientBehaviorType.LOGIN:
+        case BehaviorType.LOGIN:
           // 登录
-          const user: UserType = await connectInit(data);
-          // user是存入redis的信息，包括id和name
-          // 用id作一个socket映射，用于对某个客户端发送消息
-          addSocket(user.userId, socket);
+          await saveUserRedisStorage(data as ClientBehaviorLogin, socket);
           // 登录之后主动返回一次用户列表给客户端
           userListUpdate(io);
           break;

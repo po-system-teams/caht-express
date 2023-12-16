@@ -10,9 +10,7 @@ export default function joinGroup(socket: Socket) {
     const message: Message = {
       type: MessageType.TEXT,
       data: data?.message,
-      origin: MessageOrigin.OTHER,
       time: new Date().getTime(),
-      id: socket.id,
     };
     socket.to("chat room").emit("receiveMessage", message);
   });

@@ -1,8 +1,8 @@
 export enum SocketEventType { // socket事件名称
     CLIENT_BEHAVIOR = 'clientBehavior', // 客户端行为
+    SERVER_BEHAVIOR = 'serverBehavior', // 服务端行为
     SEND_MESSAGE = 'sendMessage', // 客户端发送消息给服务端
 	RECEIVE_MESSAGE = 'receiveMessage', // 客户端接收服务端消息
-    SERVER_BEHAVIOR = 'serverBehavior', // 服务端行为
 }
 
 export interface UserType {
@@ -17,12 +17,8 @@ export interface UserType {
 export interface Message {
 	type: MessageType; // 消息类型
 	origin: MessageOrigin; // 消息来源
-	originUserId: number, // 来源用户id
-	originSocketId: string, // 来源socketId
-	targetUserId: number, // 目标用户id
-	targetSocketId: string, // 目标socketId
 	data: string; // 消息内容
-	time?: number; // 消息时间
+	time: number; // 消息时间
 }
 
 export enum MessageType {
@@ -37,29 +33,36 @@ export enum MessageOrigin {
 
 // 客户端行为
 export interface ClientBehavior {
-	type: ClientBehaviorType,
+	type: BehaviorType,
+	[key: string]: any
+}
+
+// 客户端私聊行为
+export interface ClientBehaviorPrivateChat {
+	type: BehaviorType.LAUNCHPRIVATECHAT,
+	originUserId: number, // 来源用户id
+	targetUserId: number, // 目标用户id
+	data: Message, // 消息内容
+}
+
+export interface ClientBehaviorLogin {
+	type: BehaviorType.LOGIN,
 	userId: number, // 用户id
-	targetSocketId: string, // 操作目标的socketId
-	name?: string, // 用户名称
-	socketId?: string, // socketId
 }
 
-// 客户端行为类型
-export enum ClientBehaviorType {
+// 客户端群聊类型
+
+// 行为类型
+export enum BehaviorType {
 	LOGIN = 'login', // 登录
-	LAUNCHPRIVATECHAT = 'launch_private_chat', // 启动私聊
-	BREAKPRIVATECHAT = 'break_private_chat', // 断开私聊
-	LAUNCHGROUPCHAT = 'launch_group_chat', // 启动群聊
-	BREAKGROUTCHAT = 'break_group_chat', // 断开群聊
+	LAUNCHPRIVATECHAT = 'launch_private_chat', // 私聊
+	LAUNCHGROUPCHAT = 'launch_group_chat', // 群聊
+	USERLISTUPDATE = 'user_list_update', // 更新在线用户列表
 }
 
-// 服务端行为
-export interface ServerBehavior {
-    type: ServerBehaviorType; // 行为类型
+// 服务端行为-更新在线用户列表
+export interface ServerBehaviorUpdateUserList {
+    type: BehaviorType.USERLISTUPDATE; // 行为类型
     data: any; // 数据
-}
-
-export enum ServerBehaviorType {
-    USERLISTUPDATE = 'user_list_update', // 在线用户列表更新
 }
 

@@ -1,5 +1,5 @@
 import { getBatchUser } from '../mysql';
-import { ServerBehavior, ServerBehaviorType, SocketEventType } from '../types/chat';
+import { ServerBehaviorUpdateUserList, BehaviorType, SocketEventType } from '../types/chat';
 import { RedisKey } from '../types/redis';
 import { getRedis } from '../utils/redisUtils';
 
@@ -27,9 +27,9 @@ async function userListUpdate(io: any) {
     }
     // 广播给所有用户
     io.emit(SocketEventType.SERVER_BEHAVIOR, {
-      type: ServerBehaviorType.USERLISTUPDATE,
+      type: BehaviorType.USERLISTUPDATE,
       data,
-    } as ServerBehavior);
+    } as ServerBehaviorUpdateUserList);
   } catch (err) {
     console.log(err);
   }

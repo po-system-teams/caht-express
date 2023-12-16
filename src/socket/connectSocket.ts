@@ -1,5 +1,4 @@
 import { Socket } from "socket.io";
-import { UserType } from "../types/chat";
 
 export const connectSocket: Map<number, Socket> = new Map();
 
