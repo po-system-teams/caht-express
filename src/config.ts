@@ -7,7 +7,7 @@ module.exports = {
         database: 'xp_express'
     },
     serverconfig: {
-        port: 3000,
+        port: 8112,
         host: '0.0.0.0'
     },
     radisconfig: {
